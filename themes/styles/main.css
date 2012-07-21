@@ -1,0 +1,105 @@
+body{
+	font-size: 12px;
+	margin: 0px;
+	padding: 0px;
+}
+
+.mainpage{
+	width : 960px;
+	min-height : 600px;
+	margin: 0 auto;
+}
+
+
+/*===================================================*/
+.tracercontainer{
+	margin : 0;
+	padding : 0;
+}
+
+.tracercontainer .tracerhead,
+.tracercontainer .tracerrow{	
+	clear: both;
+}
+
+
+.tracercontainer .tracerhead span{
+	border: 1px solid #666;
+	background-color: #ddd;
+	padding: 1px;
+}
+
+.tracercontainer .tracerrow span{
+	border: 1px solid #666;
+	clear: both;
+	padding: 1px;
+}
+
+
+
+table{
+	width : 100%;
+	border-collapse: collapse;	
+}
+
+table, th, tr, td{	
+	border: 1px solid #666;
+}
+
+td{
+	padding: 2px 5px;
+}
+
+
+
+.selectedrow{
+	background-color: #bbb;
+}
+
+/*===================================================*/
+
+
+.webextracer .tracerHead{
+	height: 40px;
+	width: 960px;
+	margin: 0 auto;
+	background: -moz-linear-gradient(100% 100% 90deg,#0085DA,#00AEE9);
+	background: -webkit-gradient(linear,0% 0,0% 100%,from(#00AEE9),to(#0085DA));
+	padding-top: 10px;
+}
+
+.webextracer .wbxLogo{
+	background-image: url(../images/cisco_webex.png);
+	height: 26px;
+	width: 160px;
+	margin-left: 20px;	
+	float: left;
+}
+
+.webextracer .filter{
+    float: right;
+    margin-right: 10px;
+}
+input{
+	border: 1px solid #CECECE;
+	padding : 2px 2px;
+}
+
+.webextracer .mainpage .ui-widget-header{
+	background:none;
+}
+
+.webextracer .mainpage .ui-widget-content{
+	border:none;
+}
+
+.webextracer .mainpage .ui-tabs-nav{
+	border: none;
+	padding-left:0px;
+}
+
+.webextracer .mainpage .ui-tabs-panel{
+	border: 1px solid #4297D7;
+	 
+	border-top-right-radius: 5px;
+}
