@@ -2,6 +2,7 @@
 wbxTracer.TracerContent = {
 	selectedRow : null,
 	loadContent : function(path){
+		alert(1);
 		var self = this;
 		var content = this._getContent();
 		
