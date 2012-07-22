@@ -1,5 +1,5 @@
 (function(){
-	var ui = '<div><select id="dna_type"/><input id="p1"/><input id="p2"/><input id="p3"/></div>';
+	var ui = '<div><div><select id="dna_type"/><input id="p1"/><input id="p2"/><input id="p3"/><input type="submit" id="go" name="go"/></div><div id="result"/></div>';
 	$(".mainpage").append(ui);
 	
 	function assert(b){
@@ -50,6 +50,7 @@
 			for (var i in s1){
 				if (s1[i] != s2[i]) return false;
 			}
+			return true;
 		},
 		
 		intersection : function(s1, s2){
@@ -67,7 +68,13 @@
 		}
 	};
 	
-	function qlookup(val){
+	function qlookup(type, val){
+		if (type in qmap){
+			var map = qmap[type];
+			if (val in map){
+				return map[val];
+			}
+		}
 		return null;
 	}
 	
@@ -75,27 +82,27 @@
 		if (!p1 || !p2 || !p3) return;
 		
 		function calc_q(q) { // 1/q
-			var val = qlookup(q);
+			var val = q[0];
 			if (val && val !== 0.0) val = 1 / val;
 			return val;
 		}
 		
 		function calc_2q(q) { // 1/2q
-			var val = qlookup(q);
+			var val = q[0];
 			if (val && val !== 0.0) val = 1 / (2 * val);
 			return val;
 		}
 		
-		function calc_pq(p, q) { // 1/(p + q)
-			var val = qlookup(p);
-			var val2 = qlookup(q);
+		function calc_pq(q) { // 1/(p + q)
+			var val = qlookup(q[0]);
+			var val2 = qlookup(q[1]);
 			if (val && val2 && (val + val2) !== 0.0) val = 1 / (val + val2);
 			return val;
 		}
 		
-		function calc_2pq(p, q) { // 1/2(p + q)
-			var val = qlookup(p);
-			var val2 = qlookup(q);
+		function calc_2pq(q) { // 1/2(p + q)
+			var val = qlookup(q[0]);
+			var val2 = qlookup(q[1]);
 			if (val && val2 && (val + val2) !== 0.0) val = 1 / (val + val2) / 2;
 			return val;
 		}
@@ -172,10 +179,31 @@
 		
 		return null;
 	}
+	
+	function calc(type, result){
+		var resolvedValue = [];
+		var params = result.param;
+		for (var i in params){
+			resolvedValue.push(qlookup(type, params[i]));
+		}
+		var pi = result.format(resolvedValue);
+	}
 		
-	$('input').change(function(){
+	$('#go').click(function(){
 //		console.info($(this).attr('id') + $(this).val());
-		matchPattern(parseParam($('.p1').val), parseParam($('.p2').val), parseParam($('.p3').val));
+		
+		var result = matchPattern(parseParam($('#p1').val()), parseParam($('#p2').val()), parseParam($('#p3').val()));
+		if (result){
+			var type = $('#dna_type').val();
+			if (type == '--'){
+				for (var i in qmap){
+					calc(qmap[i], result);
+				}
+			}
+			else {
+				calc(type, result);
+			}
+		}
 		
 	});
 
