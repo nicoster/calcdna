@@ -1,5 +1,5 @@
 (function(){
-	var ui = '<div><div><select id="dna_type"/><input id="p1"/><input id="p2"/><input id="p3"/><input type="submit" id="go" name="go"/></div><div id="result"/></div>';
+	var ui = '<div><div><select id="dna_type"/><input id="p1"/ value="19"><input id="p2" value="19"/><input id="p3" value="19"/><input type="submit" id="go" name="go"/></div><div id="pattern"/><table id="result"/></table>';
 	$(".mainpage").append(ui);
 	
 	function assert(b){
@@ -18,6 +18,7 @@
 			options.append(new Option(i, i, true, true));
 		}
 		options.val(selected);
+		evaluate();
 	});
 	
 	function parseParam(val){
@@ -111,7 +112,7 @@
 		switch(lengths)
 		{
 			case '121':
-				var q = set.minus(p2, p1);
+				var q = set.intersection(p2, p1);
 				if (set.equal(q, p3)){
 					return {
 						pattern: "q pq q 1/q",
@@ -186,18 +187,22 @@
 		for (var i in params){
 			resolvedValue.push(qlookup(type, params[i]));
 		}
+		result.resolved = resolvedValue;
 		var pi = result.format(resolvedValue);
+		$('#pattern').html("<h2>Pattern: " + result.pattern + "</h2>");
+		$('#result').append("<tr><td>" + type + "</td><td>" + result.resolved + "</td><td>" + (pi ? pi : "") + "</td></tr>");
 	}
 		
-	$('#go').click(function(){
+	function evaluate(){
 //		console.info($(this).attr('id') + $(this).val());
-		
+		$('#result').html('<tr><th>Type</th><th>Resolved</th><th>PI</th></tr>');
+		$('#pattern').html("<h2>Pattern: </h2>");
 		var result = matchPattern(parseParam($('#p1').val()), parseParam($('#p2').val()), parseParam($('#p3').val()));
 		if (result){
 			var type = $('#dna_type').val();
-			if (type == '--'){
+			if (type === ''){
 				for (var i in qmap){
-					calc(qmap[i], result);
+					calc(i, result);
 				}
 			}
 			else {
@@ -205,7 +210,9 @@
 			}
 		}
 		
-	});
-
+	}
 	
+	// $('input').keyup(evaluate);
+	// $('#dna_type').change(evaluate);
+	$('#go').click(evaluate);
 })();
