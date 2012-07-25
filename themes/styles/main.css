@@ -6,9 +6,9 @@ body{
 }
 
 .mainpage{
-	width : 960px;
+/*	width : 960px;
 	min-height : 600px;
-	margin: 0 auto;
+*/	margin: 0 auto;
 }
 
 
@@ -36,22 +36,35 @@ body{
 	padding: 1px;
 }
 
-
+table input {width:90%;}
 
 table{
-	width : 400px;
-	border-collapse: collapse;	
+/*	width : 700px;
+*/	border-collapse: collapse;	
 }
 
 table, th, tr, td{	
 	border: 1px solid #666;
-	text-align: left;
+}
+
+th{
+	font-size:14px;
 }
 
 td, th{
-	padding: 2px 5px;
+	padding: 2px 2px;
 }
 
+.pattern{width:100px;
+}
+#loci{
+	width: 80px;
+	text-align: left;
+}
+
+.pi{width:130px;}
+
+.p1, .p2, .p3{width:60px;}
 
 
 .selectedrow{
@@ -61,7 +74,7 @@ td, th{
 /*===================================================*/
 
 
-.webextracer .tracerHead{
+.tracerHead{
 	height: 40px;
 	width: 960px;
 	margin: 0 auto;
@@ -70,7 +83,7 @@ td, th{
 	padding-top: 10px;
 }
 
-.webextracer .wbxLogo{
+.wbxLogo{
 	background-image: url(../images/cisco_webex.png);
 	height: 26px;
 	width: 160px;
@@ -78,7 +91,7 @@ td, th{
 	float: left;
 }
 
-.webextracer .filter{
+.filter{
     float: right;
     margin-right: 10px;
 }
@@ -87,20 +100,20 @@ input{
 	padding : 2px 2px;
 }
 
-.webextracer .mainpage .ui-widget-header{
+.mainpage .ui-widget-header{
 	background:none;
 }
 
-.webextracer .mainpage .ui-widget-content{
+.mainpage .ui-widget-content{
 	border:none;
 }
 
-.webextracer .mainpage .ui-tabs-nav{
+.mainpage .ui-tabs-nav{
 	border: none;
 	padding-left:0px;
 }
 
-.webextracer .mainpage .ui-tabs-panel{
+.mainpage .ui-tabs-panel{
 	border: 1px solid #4297D7;
 	 
 	border-top-right-radius: 5px;

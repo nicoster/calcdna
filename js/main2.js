@@ -1,24 +1,70 @@
+var table_;
+
 (function(){
-	var ui = '<div><div><select id="dna_type"/><input id="p1"/ value="19"><input id="p2" value="19"/><input id="p3" value="19"/><input type="submit" id="go" name="go"/></div><div id="pattern"/><table id="result"/></table>';
+	// <div><select id="kit"/><input type="submit" id="go" value="go"/></div>
+	var ui = //'<div><div id="main"><div id="content"><table /></div></div></div>';
+	 	'<div id="main">'+
+							'<ul>'+
+//								'<li><a href="#content">Default</a></li>'+
+							'</ul>'+
+							// '<div id="content">'+
+							// '</div>'+
+						'</div>';
 	$(".mainpage").append(ui);
 	
 	function assert(b){
 		if (! b) alert("Assertion failed! " + b);
 	}
+	
+	function buildTable(table, loci, accessor){
+		table.append('<tr><th id="loci">STR基因座</th><th>C</th><th>M</th><th>AF</th><th>公式</th><th>PI</th></tr>');
+		for (var i in loci){
+			table.append("<tr id='" + i +"'><td>" + (accessor ? accessor(loci, i) : i) + '</td><td class="p1"><input/ ></td><td class="p2"><input  /></td><td class="p3"><input /></td><td class="pattern"/><td class="pi"/></tr>"');
+		}		
+	}
+	
+	var main_ = $('#main').tabs({
+		add : function(event, ui){
+			var table = $('<table/>');
+			table_ = table;
+			buildTable(table, kits_[ui.panel.id], function(container, i){
+				return container[i];
+			});
+			$(ui.panel).append(table);
+
+			$('#' + ui.panel.id + ' input').keyup(evaluate);			
+		},
 		
-	var qmap = {};
-	jQuery.getJSON("qmap.json", function(data){
-		qmap = data;
-		var options = $('#dna_type');
-		options.append(new Option('--', '', true, true));
-		var selected = null;
-		for (var i in qmap)
-		{
-			if (!selected) selected = i;
-			options.append(new Option(i, i, true, true));
+		select : function(event, ui){
+//			$(ui.panel).append(table_);
 		}
-		options.val(selected);
-		evaluate();
+	});
+	
+	var kits_ = {};
+	jQuery.getJSON("kits.json", function(kits){
+		kits_ = kits;
+		
+		for (var i in kits_){
+			console.info(i);
+			main_.tabs('add', '#' + i, i);		
+		}
+		
+	});
+
+	var lociData_ = {};
+	jQuery.getJSON("loci.json", function(data){
+		lociData_ = data;		
+		
+		// var options = $('#dna_type');
+		// options.append(new Option('--', '', true, true));
+		// var selected = null;
+		// for (var i in lociData_)
+		// {
+		// 	if (!selected) selected = i;
+		// 	options.append(new Option(i, i, true, true));
+		// }
+		// options.val(selected);
+		// evaluate();
 	});
 	
 	function parseParam(val){
@@ -70,8 +116,8 @@
 	};
 	
 	function qlookup(type, val){
-		if (type in qmap){
-			var map = qmap[type];
+		if (type in lociData_){
+			var map = lociData_[type];
 			if (val in map){
 				return map[val];
 			}
@@ -189,30 +235,21 @@
 		}
 		result.resolved = resolvedValue;
 		var pi = result.format(resolvedValue);
-		$('#pattern').html("<h2>Pattern: " + result.pattern + "</h2>");
-		$('#result').append("<tr><td>" + type + "</td><td>" + result.resolved + "</td><td>" + (pi ? pi : "") + "</td></tr>");
+		$('#' + type + ' .pi').html(pi ? pi : "");
+		$('#' + type + ' .pattern').html(result.pattern);
 	}
 		
 	function evaluate(){
 //		console.info($(this).attr('id') + $(this).val());
-		$('#result').html('<tr><th>Type</th><th>Resolved</th><th>PI</th></tr>');
-		$('#pattern').html("<h2>Pattern: </h2>");
-		var result = matchPattern(parseParam($('#p1').val()), parseParam($('#p2').val()), parseParam($('#p3').val()));
-		if (result){
-			var type = $('#dna_type').val();
-			if (type === ''){
-				for (var i in qmap){
-					calc(i, result);
-				}
-			}
-			else {
-				calc(type, result);
-			}
-		}
 		
+		for (var i in lociData_){
+			$('#' + i + ' .pi').html('');
+			var result = matchPattern(parseParam($('#' + i + ' .p1 input').val()), parseParam($('#' + i + ' .p3 input').val()), parseParam($('#' + i + ' .p3 input').val()));
+			if (result){
+				calc(i, result);
+			}			
+		}
 	}
 	
-	// $('input').keyup(evaluate);
-	// $('#dna_type').change(evaluate);
-	$('#go').click(evaluate);
+//	$('#go').click(evaluate);
 })();
