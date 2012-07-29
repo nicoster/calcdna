@@ -1,9 +1,7 @@
-var table_;
-
 (function(){
 	// <div><select id="kit"/><input type="submit" id="go" value="go"/></div>
 	var ui = //'<div><div id="main"><div id="content"><table /></div></div></div>';
-	 	'<div id="main">'+
+		'<div id="main">'+
 							'<ul>'+
 //								'<li><a href="#content">Default</a></li>'+
 							'</ul>'+
@@ -19,10 +17,11 @@ var table_;
 	function buildTable(table, loci, accessor){
 		table.append('<tr><th id="loci">STR基因座</th><th>C</th><th>M</th><th>AF</th><th>公式</th><th>PI</th></tr>');
 		for (var i in loci){
-			table.append("<tr id='" + i +"'><td>" + (accessor ? accessor(loci, i) : i) + '</td><td class="p1"><input/ ></td><td class="p2"><input  /></td><td class="p3"><input /></td><td class="pattern"/><td class="pi"/></tr>"');
+			var lo = (accessor ? accessor(loci, i) : i);
+			table.append("<tr id='" + lo +"'><td>" + lo + '</td><td class="p1"><input/ ></td><td class="p2"><input  /></td><td class="p3"><input /></td><td class="pattern"/><td class="pi"/></tr>"');
 		}		
 	}
-	
+	var activeTabId_;
 	var main_ = $('#main').tabs({
 		add : function(event, ui){
 			var table = $('<table/>');
@@ -36,7 +35,7 @@ var table_;
 		},
 		
 		select : function(event, ui){
-//			$(ui.panel).append(table_);
+			activeTabId_ = ui.panel.id;
 		}
 	});
 	
@@ -54,17 +53,17 @@ var table_;
 	var lociData_ = {};
 	jQuery.getJSON("loci.json", function(data){
 		lociData_ = data;		
-		
-		// var options = $('#dna_type');
-		// options.append(new Option('--', '', true, true));
-		// var selected = null;
-		// for (var i in lociData_)
-		// {
-		// 	if (!selected) selected = i;
-		// 	options.append(new Option(i, i, true, true));
-		// }
-		// options.val(selected);
-		// evaluate();
+		/*
+		var options = $('#dna_type');
+		options.append(new Option('--', '', true, true));
+		var selected = null;
+		for (var i in lociData_)
+		{
+			if (!selected) selected = i;
+			options.append(new Option(i, i, true, true));
+		}
+		options.val(selected);
+		evaluate();*/
 	});
 	
 	function parseParam(val){
@@ -126,8 +125,8 @@ var table_;
 	}
 	
 	function matchPattern(p1, p2, p3){
-		if (!p1 || !p2 || !p3) return;
-		
+		if (!p1 || !p2 || !p3 || !p1.length || !p2.length || !p3.length) return;
+		console.info (p1, p2, p3);
 		function calc_q(q) { // 1/q
 			var val = q[0];
 			if (val && val !== 0.0) val = 1 / val;
@@ -227,27 +226,32 @@ var table_;
 		return null;
 	}
 	
+//	function makeSelector(loci, appendix){var ret = '#' + activeTabId_ + ' #' + loci + (appendix ? (' ' + appendix) : ''); console.info(ret); return ret;}
+	
 	function calc(type, result){
-		var resolvedValue = [];
+		var resolved = [];
 		var params = result.param;
 		for (var i in params){
-			resolvedValue.push(qlookup(type, params[i]));
+			resolved.push(qlookup(type, params[i]));
 		}
-		result.resolved = resolvedValue;
-		var pi = result.format(resolvedValue);
-		$('#' + type + ' .pi').html(pi ? pi : "");
-		$('#' + type + ' .pattern').html(result.pattern);
+		result.resolved = resolved;
 	}
 		
 	function evaluate(){
-//		console.info($(this).attr('id') + $(this).val());
+		var root = $(this).parents("tr");
+		if (! root) return;
 		
-		for (var i in lociData_){
-			$('#' + i + ' .pi').html('');
-			var result = matchPattern(parseParam($('#' + i + ' .p1 input').val()), parseParam($('#' + i + ' .p3 input').val()), parseParam($('#' + i + ' .p3 input').val()));
-			if (result){
-				calc(i, result);
-			}			
+		root.find('.pi').html('');
+		var result = matchPattern(
+			parseParam(root.find('.p1 input').val()),
+			parseParam(root.find('.p2 input').val()),
+			parseParam(root.find('.p3 input').val()));
+		if (result){
+			calc(root[0].id, result);
+			var pi = result.format(result.resolved);
+			$(root.find('.pi')).html(pi ? pi : "");
+			$(root.find('.pattern')).html(result.pattern);
+			
 		}
 	}
 	
