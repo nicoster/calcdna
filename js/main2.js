@@ -1,4 +1,4 @@
-(function(){
+﻿(function(){
 	// <div><select id="kit"/><input type="submit" id="go" value="go"/></div>
 	var ui = 
 		'<div id="main">'+
@@ -15,7 +15,7 @@
 		table.append('<tr><th id="loci">STR基因座</th><th>C</th><th>M</th><th>AF</th><th>公式</th><th>PI</th></tr>');
 		for (var i in loci){
 			var lo = (accessor ? accessor(loci, i) : i);
-			table.append("<tr id='" + lo +"'><td>" + lo + '</td><td class="p1"><input/></td><td class="p2"><input/></td><td class="p3"><input /></td><td class="pattern"/><td class="pi"/></tr>"');
+			table.append("<tr id='" + lo +"'><td>" + lo + "</td><td class='p1'><input/></td><td class='p2'><input/></td><td class='p3'><input /></td><td class='pattern'/><td class='pi'/></tr>");
 		}		
 	}
 	var activeTabId_;
