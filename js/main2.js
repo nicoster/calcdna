@@ -1,4 +1,4 @@
-﻿(function(){
+(function(){
 	// <div><select id="kit"/><input type="submit" id="go" value="go"/></div>
 	var ui = 
 		'<div id="main">'+
@@ -18,7 +18,7 @@
 			table.append("<tr id='" + lo +"'><td>" + lo + "</td><td class='p1'><input/></td><td class='p2'><input/></td><td class='p3'><input /></td><td class='pattern'/><td class='pi'/></tr>");
 		}		
 	}
-	var activeTabId_;
+
 	var main_ = $('#main').tabs({
 		add : function(event, ui){
 			var table = $('<table/>');
@@ -31,7 +31,6 @@
 		},
 		
 		select : function(event, ui){
-			activeTabId_ = ui.panel.id;
 		}
 	});
 	
@@ -92,17 +91,21 @@
 		}
 		
 		function calc_pq(q) { // 1/(p + q)
-			var val = qlookup(q[0]);
-			var val2 = qlookup(q[1]);
-			if (val && val2 && (val + val2) !== 0.0) val = 1 / (val + val2);
-			return val;
+			var ret = 0;
+			var val = q[0];
+			var val2 = q[1];
+			if (val && val2 && (val + val2) !== 0.0)
+				ret = 1 / (val * 1.0 + val2 * 1.0);
+			return ret;
 		}
 		
 		function calc_2pq(q) { // 1/2(p + q)
-			var val = qlookup(q[0]);
-			var val2 = qlookup(q[1]);
-			if (val && val2 && (val + val2) !== 0.0) val = 1 / (val + val2) / 2;
-			return val;
+			var ret = 0;
+			var val = q[0];
+			var val2 = q[1];
+			if (val && val2 && (val + val2) !== 0.0) 
+				ret = 1 / ((val * 1.0 + val2 * 1.0) * 2);
+			return ret;
 		}
 		
 		function minus(s1, s2){
@@ -135,7 +138,13 @@
 		}
 		
 		function union(s1, s2){
-			return s1.concat(s2);
+			var ret = [];
+			for (var i in s1){
+				if (s2.indexOf(s1[i]) == -1){
+					ret.push(s1[i]);
+				}
+			}
+			return ret.concat(s2);
 		}
 		
 		var lengths = '' + p1.length + p2.length + p3.length;
@@ -205,6 +214,57 @@
 					};
 				}
 				break;
+			case '221':
+				var p = intersection(p1, p2);
+				var q = minus(p1, p);
+				if (equal(q, p3)){
+					return {
+						pattern: "pq pr q 1/q",
+						param: q,
+						formula: calc_q
+					};
+				}
+				
+				if (equal(p1, p2) &&
+					equal(p3, intersection(p2, p3))){
+					return {
+						pattern: "pq pq q 1/(p+q)",
+						param: p1,
+						formula: calc_pq
+					};
+				}
+				break;
+			case '222':
+				if (equal(p1, p2)){
+					if (equal(p2, p3)){
+						return {
+							pattern: "pq pq pq 1/(p+q)",
+							param: p1,
+							formula: calc_pq
+						};
+					}
+					else{
+						if (intersection(p2, p3).length !== 0){
+							return {
+								pattern: "pq pq qr 1/(2p+2q)",
+								param: p1,
+								formula: calc_2pq
+							};
+						}
+					}
+				}
+				
+				if (! equal(p2, p3) && 
+					! equal(p1, p2) && 
+					union(p1, union(p2, p3)).length == 3){
+					var q = minus(p1, p2);
+					return {
+						pattern: "pq pr qr(pq) 1/2q",
+						param: q,
+						formula: calc_2q
+					};
+				}
+				break;
 				
 		}
 		
@@ -217,6 +277,7 @@
 		for (var i in params){
 			resolved.push(qlookup(type, params[i]));
 		}
+		console.info('params: ' + params + ' resolved: ' + resolved);
 		result.resolved = resolved;
 	}
 		
@@ -225,6 +286,7 @@
 		if (! root) return;
 		
 		root.find('.pi').html('');
+		root.find('.pattern').html('');
 		var result = matchPattern(
 			parseParam(root.find('.p1 input').val()),
 			parseParam(root.find('.p2 input').val()),
@@ -237,6 +299,4 @@
 			root.find('.pattern').html(result.pattern.split(' ')[3]);
 		}
 	}
-	
-//	$('#go').click(evaluate);
 })();
