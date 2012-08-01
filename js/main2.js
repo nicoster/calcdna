@@ -16,7 +16,9 @@
 		for (var i in loci){
 			var lo = (accessor ? accessor(loci, i) : i);
 			table.append("<tr id='" + lo +"'><td>" + lo + "</td><td class='p1'><input/></td><td class='p2'><input/></td><td class='p3'><input /></td><td class='pattern'/><td class='pi'/></tr>");
-		}		
+		}
+		
+		table.append("<tr><td>累计父权指数(CPI)</td><td colspan='5' id='cpi'/></tr>");
 	}
 
 	var main_ = $('#main').tabs({
@@ -297,6 +299,14 @@
 			var pi = result.formula(result.resolved);
 			root.find('.pi').html(pi ? pi : "");
 			root.find('.pattern').html(result.pattern.split(' ')[3]);
+			var pis = root.parent().find('tr .pi');
+			var cpi = 1.0;
+			for (var i = 0; i < pis.length; i ++){
+				var val = Number($(pis[i]).text());
+				if (val){ cpi *= val;}
+			}
+			console.info(cpi);
+			root.parent().find('#cpi').text(cpi.toExponential(6));
 		}
 	}
 })();
