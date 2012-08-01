@@ -156,6 +156,7 @@
 		{
 			case '121':
 				var q = intersection(p2, p1);
+				q.sort();
 				if (equal(q, p3)){
 					return {
 						pattern: "q pq q 1/q",
@@ -176,6 +177,7 @@
 				break;
 			case '122':
 				var q = intersection(p2, p3);
+				q.sort();
 				if (equal(q, p1)){
 					return {
 						pattern: "q pq qr(pq) 1/2q",
@@ -186,6 +188,7 @@
 				break;
 			case '112':
 				var q = intersection(p2, p3);
+				q.sort();
 				if (equal(p1, q) && equal(q, p2))
 				{
 					return {
@@ -208,9 +211,10 @@
 			case '212':
 				var all = union(p2, p3);
 				var inter = intersection(all, p1);
+				inter.sort();
 				if (equal(inter, p1)){
 					var q = minus(p1, p2);
-					assert(q.lengh == 1);
+					assert(q.length == 1);
 					return {
 						pattern: "pq p qr(pq) 1/2q",
 						param: q,
@@ -221,6 +225,7 @@
 			case '221':
 				var p = intersection(p1, p2);
 				var q = minus(p1, p);
+				q.sort();
 				if (equal(q, p3)){
 					return {
 						pattern: "pq pr q 1/q",

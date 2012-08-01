@@ -1,0 +1,57 @@
+body{
+	font-size: 12px;
+	font-family: helvetica;
+	margin: 10 10 10 10px;
+	padding: 0px;
+}
+
+.mainpage{
+/*	width : 960px;
+	min-height : 600px;
+*/	margin: 0 auto;
+}
+
+table input {width:90%;}
+
+table{
+/*	width : 700px;
+*/	border-collapse: collapse;	
+}
+
+table, th, tr, td{	
+	border: 1px solid #666;
+}
+
+th{
+	font-size:14px;
+}
+
+td, th{
+	padding: 2px 2px;
+}
+
+.pattern{width:100px;
+}
+#loci{
+	width: 80px;
+	text-align: left;
+}
+
+.pi{width:130px;}
+
+.p1, .p2, .p3{width:60px;}
+
+input{
+	border: 1px solid #CECECE;
+	padding : 2px 2px;
+}
+
+.mainpage .ui-widget-header{
+	background:none;
+}
+
+.mainpage .ui-widget-content{
+	border:none;
+}
+
+
