@@ -306,8 +306,9 @@
 			calc(root[0].id, result);
 			
 			var pi = result.formula(result.resolved);
-			root.find('.pi').html(pi ? pi : "");
+			root.find('.pi').html(pi ? Number(pi).toFixed(8) : "");
 			root.find('.pattern').html(result.pattern.split(' ')[3]);
+			
 			var pis = root.parent().find('tr .pi');
 			var cpi = 1.0;
 			for (var i = 0; i < pis.length; i ++){
