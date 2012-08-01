@@ -13,7 +13,7 @@
 	
 	function buildTable(table, loci, accessor){
 		table.append('<tr><th id="loci">STR基因座</th><th>C</th><th>M</th><th>AF</th><th>公式</th><th>PI</th></tr>');
-		for (var i in loci){
+		for (var i = 0; i < loci.length; i ++){
 			var lo = (accessor ? accessor(loci, i) : i);
 			table.append("<tr id='" + lo +"'><td>" + lo + "</td><td class='p1'><input/></td><td class='p2'><input/></td><td class='p3'><input /></td><td class='pattern'/><td class='pi'/></tr>");
 		}
@@ -41,8 +41,10 @@
 		kits_ = kits;
 		
 		for (var i in kits_){
-			console.info(i);
-			main_.tabs('add', '#' + i, i);		
+			if (kits_.hasOwnProperty(i)){
+				console.info(i);
+				main_.tabs('add', '#' + i, i);		
+			}
 		}
 		
 		main_.tabs('select', 0);
@@ -277,7 +279,9 @@
 		var resolved = [];
 		var params = result.param;
 		for (var i in params){
-			resolved.push(qlookup(type, params[i]));
+			if (params.hasOwnProperty(i)){
+				resolved.push(qlookup(type, params[i]));
+			}
 		}
 		console.info('params: ' + params + ' resolved: ' + resolved);
 		result.resolved = resolved;
