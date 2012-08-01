@@ -265,7 +265,8 @@
 				
 				if (! equal(p2, p3) && 
 					! equal(p1, p2) && 
-					union(p1, union(p2, p3)).length == 3){
+					intersection(p1, p2).length !== 0 &&
+					intersection(p1, p3).length !== 0){
 					var q = minus(p1, p2);
 					return {
 						pattern: "pq pr qr(pq) 1/2q",
