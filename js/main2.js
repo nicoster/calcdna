@@ -56,7 +56,7 @@
 	});
 	
 	function parseParam(val){
-		var reg = /(\d+)(\D+(\d+))?/;
+		var reg = /([\d.]+)(\D+([\d.]+))?/;
 		var match = reg.exec(val);
 		var ret = [];
 		if (match)
