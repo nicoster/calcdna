@@ -2,3 +2,20 @@
 
 .ui-tabs-nav 
 {display:none;}
+
+#header_left{float:left}
+#header_right{float:right}
+#title {
+	text-align:center;
+	font-size:15px;
+}
+hr{clear:both;}
+input{
+	border: 0px;
+}
+
+table
+{ 
+	margin-left: auto;
+	margin-right: auto;
+}
