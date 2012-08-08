@@ -1,21 +1,12 @@
-body{
-	font-size: 12px;
-	font-family: helvetica;
-	margin: 10 10 10 10px;
-	padding: 0px;
-}
 
 .mainpage{
-/*	width : 960px;
-	min-height : 600px;
-*/	margin: 0 auto;
+	margin: auto auto;
 }
 
 table input {width:90%;}
 
 table{
-/*	width : 700px;
-*/	border-collapse: collapse;	
+	border-collapse: collapse;	
 }
 
 table, th, tr, td{	
@@ -29,16 +20,13 @@ td {text-align: center;}
 	padding-left:20px;
 }
 
-th{
-	font-size:14px;
-}
-
 td, th{
 	padding: 2px 2px;
 }
 
 .pattern{width:100px;
 }
+
 #loci{
 	width: 80px;
 	text-align: left;

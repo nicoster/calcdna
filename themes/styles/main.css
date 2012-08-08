@@ -1,5 +1,12 @@
 @import url("common.css");
 
+body{
+	font-size: 12px;
+	font-family: helvetica;
+	margin: 10 10 10 10px;
+	padding: 0px;
+}
+
 
 .mainpage .ui-tabs-nav{
 	border: none;
@@ -10,6 +17,10 @@
 	border: 1px solid #4297D7;
 	 
 	border-top-right-radius: 5px;
+}
+
+th{
+	font-size:14px;
 }
 
 #header{display:none}

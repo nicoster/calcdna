@@ -1,11 +1,11 @@
 (function(){
 	// <div><select id="kit"/><input type="submit" id="go" value="go"/></div>
-	var ui = 
+	var tabbar = 
 		'<div id="main">'+
 			'<ul>'+
 			'</ul>'+
 		'</div>';
-	$(".mainpage").append(ui);
+	$(".mainpage").append(tabbar);
 	
 	function assert(b){
 		if (! b) alert("Assertion failed! " + b);
@@ -24,9 +24,7 @@
 	var main_ = $('#main').tabs({
 		add : function(event, ui){
 			var table = $('<table/>');
-			buildTable(table, kits_[ui.panel.id], function(container, i){
-				return container[i];
-			});
+			buildTable(table, kits_[ui.panel.id], function(vec, i){return vec[i];});
 			$(ui.panel).append(table);
 
 			$('#' + ui.panel.id + ' input').keyup(evaluate);			
