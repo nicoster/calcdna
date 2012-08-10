@@ -1,5 +1,4 @@
 (function(){
-	// <div><select id="kit"/><input type="submit" id="go" value="go"/></div>
 	var tabbar = '<div id="main"><ul/></div>';
 	$(".mainpage").append(tabbar);
 	
@@ -73,7 +72,7 @@
 		},
 		'bothdoubts':{
 			'name': '双亲皆疑',
-			'algo': null,
+			'algo': evaluateBothdoubts,
 			'buildTable': buildBothdoubtsTable
 		}
 	};
@@ -199,6 +198,34 @@
 		else
 			return 0;
 	}
+
+	function calc_2q2(q){
+		if (q[0])
+			return 1/(2 * q[0] * q[0]);
+		else
+			return 0;
+	}
+
+	function calc_q2(q){
+		if (q[0])
+			return 1/(q[0] * q[0]);
+		else
+			return 0;
+	}
+
+	function calc_8pq(q){
+		if (q[0] && q[1])
+			return 1 / (8 * Number(q[0]) * Number(q[1]));
+		else
+			return 0;
+	}
+
+	function calc_4q2(q){
+		if (q[0])
+			return 1 / (4 * q[0] * q[0]);
+		else
+			return 0;
+	}
 	
 	Array.prototype.minus = function(s2){
 		var ret = [];
@@ -266,6 +293,10 @@
 		}
 		return ret.concat(s2);
 	};
+
+	Array.prototype.empty = function(){
+		return this.length === 0;
+	};
 	
 	function union(s1, s2){
 		var ret = [];
@@ -281,24 +312,24 @@
 		if (!p1 || !p1.length) return;
 		console.info (p1);
 		
-		function calc_q2(q){
+		function calcq2(q){
 			return q[0] * q[0];
 		}
 		
-		function calc_2pq_2(q){
+		function calc2pq(q){
 			return 2 * q[0] * q[1];
 		}
 		
 		if (p1.length === 1){
 			return {
 				param: p1,
-				formula: calc_q
+				formula: calcq2
 			};
 		}
 		else {
 			return {
 				param: p1,
-				formula: calc_2pq_2
+				formula: calc2pq
 			};
 		}
 	}
@@ -355,6 +386,115 @@
 					}
 				}
 		}
+		return null;
+	}
+	function matchPatternBothdoubts(p1, p2, p3){
+		if (!p1 || !p2 || !p3 || !p1.length || !p2.length || !p3.length) return;
+		console.info (p1, p2, p3);
+		
+		var lengths = '' + p1.length + p2.length + p3.length;
+		switch(lengths){
+			case '111':
+				if (p1.equal(p2) && p2.equal(p3)){
+					return {
+						pattern: "q q q 1/2q*q",
+						param: p1,
+						formula: calc_2q2
+					};
+				}
+				break;
+			case '112':
+				if (p1.equal(p2) && ! p1.intersection(p3).empty()){
+					return {
+						pattern: "q q qr 1/2q*q",
+						param: p1,
+						formula: calc_2q2
+					};
+				}
+				break;
+			case '121':
+				if (p1.equal(p3) && ! p1.intersection(p2).empty()){
+					return {
+						pattern: "q q qr 1/2q*q",
+						param: p1,
+						formula: calc_2q2
+					};					
+				}
+				break;
+			case '122':
+				if ((p2.equal(p3) && ! p1.intersection(p2).empty()) ||
+					(p1.intersection(p2).equal(p1.intersection(p3)))) {
+					return {
+						pattern: "q pq qr(pq) 1/4q*q",
+						param: p1,
+						formula: calc_4q2
+					};
+				}
+				break;
+			case '211':
+				if (p1.equal(p2.union(p3))){
+					return {
+						pattern: "pq p q 1/2pq",
+						param: p1,
+						formula: calc_2pq
+					};
+				}
+				break;
+			case '212':
+				if ((p1.equal(p3) && ! p2.intersection(p3).empty()) ||
+					(! p1.intersection(p2).empty() && ! p1.intersection(p3).empty())) {
+					return {
+						pattern: "pq p pq(qr) 1/4pq",
+						param: p1,
+						formula: calc_4pq
+					};
+				}
+				break;
+			case '221':
+				if (p1.equal(p2) && ! p1.intersection(p3).empty()){
+					return {
+						pattern: "pq pq q 1/2pq",
+						param: p1,
+						formula: calc_2pq
+					};
+				}
+				else if (! p2.union(p3).minus(p1).empty()){
+					return {
+						pattern: "pq pr q 1/4pq",
+						param: p1,
+						formula: calc_4pq
+					};
+				}
+				break;
+			case '222':
+				if (p1.equal(p2)){
+					if (p2.equal(p3)){
+						return {
+							pattern: "pq pq pq 1/4pq",
+							param: p1,
+							formula: calc_4pq
+						};
+					}
+					else if (! p2.intersection(p3).empty()){
+						return {
+							pattern: "pq pq qr 1/8pq",
+							param: p1,
+							formula: calc_8pq
+						};
+					}
+				}
+				else if ((p1.equal(p3) && !p1.intersection(p2).empty()) ||
+					! (p2.union(p3).minus(p1).empty())){
+					return {
+						pattern: "pq pr qr(pq) 1/8pq",
+						param: p1,
+						formula: calc_8pq
+					};
+				}
+				break;
+
+		}
+
 		return null;
 	}
 	
@@ -545,6 +685,34 @@
 		}
 	}
 	
+	function evaluateBothdoubts(){
+		var root = $(this).parents("tr");
+		if (! root) return;
+		
+		root.find('.pi').html('');
+		root.find('.pattern').html('');
+		var result = matchPatternBothdoubts(
+			parseParam(root.find('.p1 input').val()),
+			parseParam(root.find('.p2 input').val()),
+			parseParam(root.find('.p3 input').val()));
+		if (result){
+			calc(root[0].id, result);
+			
+			var pi = result.formula(result.resolved);
+			root.find('.pi').html(pi ? Number(pi).toFixed(8) : "");
+			root.find('.pattern').html(result.pattern);//.split(' ')[3]);
+			
+			var pis = root.parent().find('tr .pi');
+			var cpi = 1.0;
+			for (var i = 0; i < pis.length; i ++){
+				var val = Number($(pis[i]).text());
+				if (val){ cpi *= val;}
+			}
+			console.info(cpi);
+			root.parent().find('#cpi').text(cpi.toExponential(6));
+		}
+	}	
+
 	function evaluateTriad(){
 		var root = $(this).parents("tr");
 		if (! root) return;
