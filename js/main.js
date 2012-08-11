@@ -57,22 +57,26 @@
 	var calcTypes_ = {
 		'triad':{
 			'name': '三联体',
-			'algo': evaluateTriad,
+			'algo': evaluate(3, matchPattern),
 			'buildTable': buildTriadTable
 		},
 		'dyad':{
 			'name': '二联体',
-			'algo': evaluateDyad,
+			'algo': evaluate(2, matchPatternDyad),
 			'buildTable': buildDyadTable
 		},
 		'identification':{
 			'name': '同一认定',
-			'algo': evaluateIdenty,
+			'algo': evaluate(1, matchPatternIdenty, function(root, current){
+				var p = $(current).val();
+				root.find('.p1 input').val(p);
+				root.find('.p2 input').val(p);
+			}),
 			'buildTable': buildIdentyTable
 		},
 		'bothdoubts':{
 			'name': '双亲皆疑',
-			'algo': evaluateBothdoubts,
+			'algo': evaluate(3, matchPatternBothdoubts),
 			'buildTable': buildBothdoubtsTable
 		}
 	};
@@ -308,7 +312,8 @@
 		return ret.concat(s2);
 	}
 	
-	function matchPatternIdenty(p1){
+	function matchPatternIdenty(p){
+		var p1 = p[0];
 		if (!p1 || !p1.length) return;
 		console.info (p1);
 		
@@ -334,7 +339,8 @@
 		}
 	}
 	
-	function matchPatternDyad(p1, p2){
+	function matchPatternDyad(p){
+		var p1 = p[0], p2 = p[1];
 		if (!p1 || !p2 || !p1.length || !p2.length) return;
 		console.info (p1, p2);
 		
@@ -388,7 +394,8 @@
 		}
 		return null;
 	}
-	function matchPatternBothdoubts(p1, p2, p3){
+	function matchPatternBothdoubts(p){
+		var p1 = p[0], p2 = p[1], p3 = p[2];
 		if (!p1 || !p2 || !p3 || !p1.length || !p2.length || !p3.length) return;
 		console.info (p1, p2, p3);
 		
@@ -498,7 +505,8 @@
 		return null;
 	}
 	
-	function matchPattern(p1, p2, p3){
+	function matchPattern(p){
+		var p1 = p[0], p2 = p[1], p3 = p[2];
 		if (!p1 || !p2 || !p3 || !p1.length || !p2.length || !p3.length) return;
 		console.info (p1, p2, p3);
 		
@@ -628,116 +636,37 @@
 		result.resolved = resolved;
 	}
 
-	function evaluateIdenty(){
-		var root = $(this).parents("tr");
-		if (! root) return;
-		
-		var p = $(this).val();
-		root.find('.p1 input').val(p);
-		root.find('.p2 input').val(p);
-		
-		root.find('.pi').html('');
-		root.find('.pattern').html('');
-		var result = matchPatternIdenty(
-			parseParam(root.find('.p1 input').val()));
-		if (result){
-			calc(root[0].id, result);
+	function evaluate(count, match, preCalc){
+		return function(){
+			var root = $(this).parents("tr");
+			if (! root) return;
 			
-			var pi = result.formula(result.resolved);
-			root.find('.pi').html(pi ? Number(pi).toFixed(8) : "");
-			root.find('.pattern').html(result.pattern);
-			
-			var pis = root.parent().find('tr .pi');
-			var cpi = 1.0;
-			for (var i = 0; i < pis.length; i ++){
-				var val = Number($(pis[i]).text());
-				if (val){ cpi *= val;}
-			}
-			console.info(cpi);
-			root.parent().find('#cpi').text(cpi.toExponential(6));
-		}
-	}
-		
-	function evaluateDyad(){
-		var root = $(this).parents("tr");
-		if (! root) return;
-		
-		root.find('.pi').html('');
-		root.find('.pattern').html('');
-		var result = matchPatternDyad(
-			parseParam(root.find('.p1 input').val()),
-			parseParam(root.find('.p2 input').val()));
-		if (result){
-			calc(root[0].id, result);
-			
-			var pi = result.formula(result.resolved);
-			root.find('.pi').html(pi ? Number(pi).toFixed(8) : "");
-			root.find('.pattern').html(result.pattern);
-			
-			var pis = root.parent().find('tr .pi');
-			var cpi = 1.0;
-			for (var i = 0; i < pis.length; i ++){
-				var val = Number($(pis[i]).text());
-				if (val){ cpi *= val;}
-			}
-			console.info(cpi);
-			root.parent().find('#cpi').text(cpi.toExponential(6));
-		}
-	}
-	
-	function evaluateBothdoubts(){
-		var root = $(this).parents("tr");
-		if (! root) return;
-		
-		root.find('.pi').html('');
-		root.find('.pattern').html('');
-		var result = matchPatternBothdoubts(
-			parseParam(root.find('.p1 input').val()),
-			parseParam(root.find('.p2 input').val()),
-			parseParam(root.find('.p3 input').val()));
-		if (result){
-			calc(root[0].id, result);
-			
-			var pi = result.formula(result.resolved);
-			root.find('.pi').html(pi ? Number(pi).toFixed(8) : "");
-			root.find('.pattern').html(result.pattern);//.split(' ')[3]);
-			
-			var pis = root.parent().find('tr .pi');
-			var cpi = 1.0;
-			for (var i = 0; i < pis.length; i ++){
-				var val = Number($(pis[i]).text());
-				if (val){ cpi *= val;}
-			}
-			console.info(cpi);
-			root.parent().find('#cpi').text(cpi.toExponential(6));
-		}
-	}	
+			if (preCalc) preCalc(root, this);
 
-	function evaluateTriad(){
-		var root = $(this).parents("tr");
-		if (! root) return;
-		
-		root.find('.pi').html('');
-		root.find('.pattern').html('');
-		var result = matchPattern(
-			parseParam(root.find('.p1 input').val()),
-			parseParam(root.find('.p2 input').val()),
-			parseParam(root.find('.p3 input').val()));
-		if (result){
-			calc(root[0].id, result);
-			
-			var pi = result.formula(result.resolved);
-			root.find('.pi').html(pi ? Number(pi).toFixed(8) : "");
-			root.find('.pattern').html(result.pattern);//.split(' ')[3]);
-			
-			var pis = root.parent().find('tr .pi');
-			var cpi = 1.0;
-			for (var i = 0; i < pis.length; i ++){
-				var val = Number($(pis[i]).text());
-				if (val){ cpi *= val;}
+			root.find('.pi').html('');
+			root.find('.pattern').html('');
+			var param = [];
+			for (var n = 1; n <= count; ++ n){
+				param.push(parseParam(root.find('.p' + n + ' input').val()));
 			}
-			console.info(cpi);
-			root.parent().find('#cpi').text(cpi.toExponential(6));
-		}
+
+			var result = match(param);
+			if (result){
+				calc(root[0].id, result);
+				
+				var pi = result.formula(result.resolved);
+				root.find('.pi').html(pi ? Number(pi).toFixed(8) : "");
+				root.find('.pattern').html(result.pattern);//.split(' ')[3]);
+				
+				var pis = root.parent().find('tr .pi');
+				var cpi = 1.0;
+				for (var i = 0; i < pis.length; i ++){
+					var val = Number($(pis[i]).text());
+					if (val){ cpi *= val;}
+				}
+				console.info(cpi);
+				root.parent().find('#cpi').text(cpi.toExponential(6));
+			}
+		};
 	}
 })();
