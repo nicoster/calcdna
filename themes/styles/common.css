@@ -13,21 +13,18 @@ table, th, tr, td{
 	border: 1px solid #666;
 }
 
-td {text-align: center;}
+td,th {text-align: center;}
 
 #cpi{
 	text-align:left;
 	padding-left:40px;
 }
 
-.cpi_row {
-	padding-bottom: 10px;
-	padding-top: 10px	
+.cpi {
+	padding-bottom: 25px;
+	padding-top: 25px	
 }
 
-td, th{
-	padding: 2px 2px;
-}
 
 .pattern{width:100px;
 }

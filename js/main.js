@@ -70,7 +70,7 @@
 				"<td class='p3'><input /></td><td class='p4 pattern'/><td class='p5 pi'/></tr>");
 		}
 		
-		table.append("<tr><td>累计父权指数(CPI)</td><td colspan='4' id='cpi'/><td><input type='button' value='保存'/></tr>");
+		table.append("<tr><td class='cpi'>累计父权指数(CPI)</td><td colspan='5' id='cpi'/></tr>");
 	}
 	
 	function buildDyadTable(table, loci, accessor){
@@ -81,7 +81,7 @@
 				"<td class='p2'><input/></td><td class='p3 pattern'/><td class='p4 pi'/></tr>");
 		}
 		
-		table.append("<tr><td>累计父权指数(CPI)</td><td colspan='4' id='cpi'/></tr>");
+		table.append("<tr><td class='cpi'>累计父权指数(CPI)</td><td colspan='4' id='cpi'/></tr>");
 	}
 	
 	function buildIdentyTable(table, loci, accessor){
@@ -92,7 +92,7 @@
 				"<td class='p2'><input/></td><td class='p3 pi'/></tr>");
 		}
 		
-		table.append("<tr><td class='cpi_row'>LR=1/P(X)=</td><td colspan='3' id='cpi'/></tr>");
+		table.append("<tr><td class='cpi'>LR=1/P(X)=</td><td colspan='3' id='cpi'/></tr>");
 	}
 
 	function buildBothdoubtsTable(table, loci, accessor){
@@ -104,7 +104,7 @@
 				"<td class='p3'><input /></td><td class='p4 pattern'/><td class='p5 pi'/></tr>");
 		}
 		
-		table.append("<tr><td>累计父权指数(CPI)</td><td colspan='5' id='cpi'/></tr>");
+		table.append("<tr><td class='cpi'>累计父权指数(CPI)</td><td colspan='5' id='cpi'/></tr>");
 	}
 	
 	var main_ = $('#main').tabs({
@@ -116,15 +116,27 @@
 			
 			var typetabs = $('.calctypes', $(ui.panel)).tabs({
 				add : function(event, ui){
+					var tableContainer = $('<div class="table_container"/>');
 					var table = $('<table/>');
+					var header = $('<span class="header"><span class="header_left">aaa</span><span class="header_right">bbb</span><hr/><span><h1 class="title">report</h1></span></span>');
+
 					var calcTypeId = ui.panel.id;
 					var calcType = calcTypes_[calcTypeId];
+
+					$('.header_left', header).text(calcType.format.left);
+					$('.header_right', header).text(calcType.format.right);
+					$('.title', header).text(calcType.format.title);
+					$(ui.panel).append(header);
+					$(ui.panel).append(tableContainer);
+
 					if ( calcType && calcType.buildTable){
 						calcType.buildTable(table, kits_[kitId], accessor);
-						$(ui.panel).append(table);
+						tableContainer.append(table);
 					}
+
+					tableContainer.append("<button class='save ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only'>保存</button");
 					calcType.id = calcTypeId;
-					$('input[type="button"]', table).click(saveTable({
+					$('.save', tableContainer).click(saveTable({
 						"calcType": calcType, 
 						kit:kitId
 					}));
@@ -716,7 +728,7 @@
 				data[i] = meta[i];
 			}
 
-			var $table = $(this).parents('table');
+			var $table = $(this).siblings('table');
 			var $rows = $table.find('tr');
 
 			data.locus = {};
@@ -799,6 +811,11 @@
 		};
 		reader.readAsText(file);
 	});
+
+    $(window).bind('beforeunload', function() {
+        return '确定要离开本页面吗? \n任何没有保存的修改在离开后都会丢失.';
+    }); 
+//	$('#loadFiles').customFileInput();
 
 })();
 
