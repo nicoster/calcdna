@@ -697,6 +697,34 @@
 			saveAs(bb.getBlob("text/plain;charset=utf-8"), meta.kit + '.' + meta.calcType.name + '.' + df + '.txt');
 		};
 	}
+
+	$('#loadFiles').change(function(evt) {
+		var files = evt.target.files; // FileList object
+		var file = files[0];
+		var reader = new FileReader();
+		reader.onerror = function(event) {
+			console.error("File could not be read! Code " + event.target.error.code);
+		};
+		reader.onload = function(event) {
+			var contents = event.target.result;
+			console.log("File contents: " + contents);
+			var data = null;//JSON.parse(contents);
+
+			data = {
+				"kit" : "All",
+				"calcType" : {
+					"id" : "triad"
+				}
+			};
+
+			if (data){
+				main_.tabs('select', '#' + data.kit);
+				$('#' + data.kit + ' .calctypes').tabs('select', '#' + data.calcType.id);
+			}
+		};
+		reader.readAsText(file);
+	});
+
 })();
 
 
