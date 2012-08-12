@@ -1,4 +1,57 @@
 (function(){
+	var ver_ = '1.0';
+	var tag_ = 'cpifile';
+	var left_default_ = '陕西省西安市公安司法鉴定中心';
+	var right_default_ = '控制编号: XAFSTC/R-06-05-1 第1版第0次修订';
+
+	var calcTypes_ = {
+		'triad':{
+			'name': '三联体',
+			'algo': evaluate(3, matchPattern),
+			'buildTable': buildTriadTable,
+			'format' : {
+				'left': left_default_,
+				'right': right_default_,
+				'title': '亲缘鉴定亲权指数数值报告表'
+			}
+		},
+		'dyad':{
+			'name': '二联体',
+			'algo': evaluate(2, matchPatternDyad),
+			'buildTable': buildDyadTable,
+			'format' : {
+				'left': left_default_,
+				'right': right_default_,
+				'title': '二联体报告表'
+			}
+		},
+		'identification':{
+			'name': '同一认定',
+			'algo': evaluate(1, matchPatternIdenty, function(root, current){
+				var p = $(current).val();
+				root.find('.p1 input').val(p);
+				root.find('.p2 input').val(p);
+			}),
+			'format' : {
+				'left': left_default_,
+				'right': right_default_,
+				'title': '本案比中个体识别统计学参数数值报告表'
+			},
+			'buildTable': buildIdentyTable
+		},
+		'bothdoubts':{
+			'name': '双亲皆疑',
+			'algo': evaluate(3, matchPatternBothdoubts),
+			'buildTable': buildBothdoubtsTable,
+			'format' : {
+				'left': left_default_,
+				'right': right_default_,
+				'title': '双亲皆疑报告表'
+			}
+		}
+	};
+
+
 	var tabbar = '<div id="main"><ul/></div>';
 	$(".mainpage").append(tabbar);
 	
@@ -14,7 +67,7 @@
 			var lo = (accessor ? accessor(loci, i) : i);
 			table.append("<tr id='" + lo +"'><td>" + lo +
 				"</td><td class='p1'><input/></td><td class='p2'><input/></td>" +
-				"<td class='p3'><input /></td><td class='pattern'/><td class='pi'/></tr>");
+				"<td class='p3'><input /></td><td class='p4 pattern'/><td class='p5 pi'/></tr>");
 		}
 		
 		table.append("<tr><td>累计父权指数(CPI)</td><td colspan='4' id='cpi'/><td><input type='button' value='保存'/></tr>");
@@ -25,7 +78,7 @@
 		for (var i = 0; i < loci.length; i ++){
 			var lo = (accessor ? accessor(loci, i) : i);
 			table.append("<tr id='" + lo +"'><td>" + lo + "</td><td class='p1'><input/></td>" +
-				"<td class='p2'><input/></td><td class='pattern'/><td class='pi'/></tr>");
+				"<td class='p2'><input/></td><td class='p3 pattern'/><td class='p4 pi'/></tr>");
 		}
 		
 		table.append("<tr><td>累计父权指数(CPI)</td><td colspan='4' id='cpi'/></tr>");
@@ -36,7 +89,7 @@
 		for (var i = 0; i < loci.length; i ++){
 			var lo = (accessor ? accessor(loci, i) : i);
 			table.append("<tr id='" + lo +"'><td>" + lo + "</td><td class='p1'><input/></td>" +
-				"<td class='p2'><input/></td><td class='pi'/></tr>");
+				"<td class='p2'><input/></td><td class='p3 pi'/></tr>");
 		}
 		
 		table.append("<tr><td class='cpi_row'>LR=1/P(X)=</td><td colspan='3' id='cpi'/></tr>");
@@ -48,38 +101,11 @@
 			var lo = (accessor ? accessor(loci, i) : i);
 			table.append("<tr id='" + lo +"'><td>" + lo +
 				"</td><td class='p1'><input/></td><td class='p2'><input/></td>" +
-				"<td class='p3'><input /></td><td class='pattern'/><td class='pi'/></tr>");
+				"<td class='p3'><input /></td><td class='p4 pattern'/><td class='p5 pi'/></tr>");
 		}
 		
 		table.append("<tr><td>累计父权指数(CPI)</td><td colspan='5' id='cpi'/></tr>");
 	}
-
-	var calcTypes_ = {
-		'triad':{
-			'name': '三联体',
-			'algo': evaluate(3, matchPattern),
-			'buildTable': buildTriadTable
-		},
-		'dyad':{
-			'name': '二联体',
-			'algo': evaluate(2, matchPatternDyad),
-			'buildTable': buildDyadTable
-		},
-		'identification':{
-			'name': '同一认定',
-			'algo': evaluate(1, matchPatternIdenty, function(root, current){
-				var p = $(current).val();
-				root.find('.p1 input').val(p);
-				root.find('.p2 input').val(p);
-			}),
-			'buildTable': buildIdentyTable
-		},
-		'bothdoubts':{
-			'name': '双亲皆疑',
-			'algo': evaluate(3, matchPatternBothdoubts),
-			'buildTable': buildBothdoubtsTable
-		}
-	};
 	
 	var main_ = $('#main').tabs({
 		add : function(event, ui){
@@ -97,9 +123,9 @@
 						calcType.buildTable(table, kits_[kitId], accessor);
 						$(ui.panel).append(table);
 					}
+					calcType.id = calcTypeId;
 					$('input[type="button"]', table).click(saveTable({
 						"calcType": calcType, 
-						"calcTypeId": calcTypeId,
 						kit:kitId
 					}));
 				}
@@ -664,7 +690,8 @@
 				
 				var pi = result.formula(result.resolved);
 				root.find('.pi').html(pi ? Number(pi).toFixed(8) : "");
-				root.find('.pattern').html(result.pattern);//.split(' ')[3]);
+				var fields = result.pattern.split(' ');
+				root.find('.pattern').html(fields[fields.length - 1]);
 				
 				var pis = root.parent().find('tr .pi');
 				var cpi = 1.0;
@@ -681,19 +708,41 @@
 
 	function saveTable(meta){
 		return function(){
+			var data = {
+				"tag" : tag_,
+				"version" : ver_
+			};
+			for (var i in meta) if (meta.hasOwnProperty(i)){
+				data[i] = meta[i];
+			}
+
+			var $table = $(this).parents('table');
+			var $rows = $table.find('tr');
+
+			data.locus = {};
+			// m, n starts from 1 to ignore the headers
+			for (var m = 1, len = $rows.length; m < len - 1; ++ m){
+				var $cols = $($rows[m]).find('td');
+				var line = data.locus[$cols[0].innerText] = [];
+				for (var n = 1; n < $cols.length; ++ n){
+					var $field = $($cols[n]);
+					if ($field.children('input').length){
+						line.push($field.children('input').val());
+					}
+					else {
+						line.push($field.text());
+					}
+				}
+			}
+			data.cpi = $table.find('#cpi').text();
+
 			var bb = new BlobBuilder();
-			bb.append(
-'{\
-	"meta":{\
-		"calcType": ' + meta.calcTypeId + ',\
-		"kit": ' + meta.kit + '\
-	}\
-}'
-			);
+			bb.append(JSON.stringify(data, null, 2));
 
 			var d = new Date();
 			var month = d.getMonth() + 1;
 			var df = d.getFullYear() + (month < 10 ? '0' + month : '' + month) + (d.getDate() < 10 ? '0' : '') + d.getDate() + '.' + d.getHours() + d.getMinutes();
+
 			saveAs(bb.getBlob("text/plain;charset=utf-8"), meta.kit + '.' + meta.calcType.name + '.' + df + '.txt');
 		};
 	}
@@ -701,25 +750,51 @@
 	$('#loadFiles').change(function(evt) {
 		var files = evt.target.files; // FileList object
 		var file = files[0];
+		console.dir(file);
+
 		var reader = new FileReader();
 		reader.onerror = function(event) {
 			console.error("File could not be read! Code " + event.target.error.code);
 		};
 		reader.onload = function(event) {
 			var contents = event.target.result;
-			console.log("File contents: " + contents);
-			var data = null;//JSON.parse(contents);
+			var data = JSON.parse(contents);
 
-			data = {
-				"kit" : "All",
-				"calcType" : {
-					"id" : "triad"
-				}
-			};
+			if (! data) {
+				alert('不正确的文件格式或文件已损坏.');
+				return;
+			}
+
+			if (! data.tag || data.tag !== tag_) {
+				alert('该文件格式无效. 请确认后重试.');
+				return;
+			}
+
+			if(! data.version || data.version != ver_){
+				alert('该文件版本为 ' + data.version + ', 请使用版本迁移工具升级该文件到 ' + ver_ + ' 后再试.');
+				return;
+			}
+
 
 			if (data){
 				main_.tabs('select', '#' + data.kit);
 				$('#' + data.kit + ' .calctypes').tabs('select', '#' + data.calcType.id);
+				var table = $('#' + data.kit + ' .calctypes #' + data.calcType.id);
+				for (var loci in data.locus){
+					if (data.locus.hasOwnProperty(loci)){
+						var tr = table.find('#' + loci);
+						for (var i = 0, len = data.locus[loci].length; i < len; ++ i){
+							var td = tr.find('.p' + (i + 1));
+							if (td.children('input').length){
+								td.children('input').val(data.locus[loci][i]);	
+							} 
+							else {
+								td.text(data.locus[loci][i]);
+							}
+						}
+					}
+				}
+				table.find('#cpi').text(data.cpi);
 			}
 		};
 		reader.readAsText(file);
