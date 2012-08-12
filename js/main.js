@@ -17,7 +17,7 @@
 				"<td class='p3'><input /></td><td class='pattern'/><td class='pi'/></tr>");
 		}
 		
-		table.append("<tr><td>累计父权指数(CPI)</td><td colspan='5' id='cpi'/></tr>");
+		table.append("<tr><td>累计父权指数(CPI)</td><td colspan='4' id='cpi'/><td><input type='button' value='保存'/></tr>");
 	}
 	
 	function buildDyadTable(table, loci, accessor){
@@ -39,7 +39,7 @@
 				"<td class='p2'><input/></td><td class='pi'/></tr>");
 		}
 		
-		table.append("<tr><td>LR=1/P(X)=</td><td colspan='3' id='cpi'/></tr>");
+		table.append("<tr><td class='cpi_row'>LR=1/P(X)=</td><td colspan='3' id='cpi'/></tr>");
 	}
 
 	function buildBothdoubtsTable(table, loci, accessor){
@@ -86,23 +86,29 @@
 			var tabbar = '<div class="calctypes"><ul/></div>';
 			$(ui.panel).append(tabbar);
 			
-			var lociId = ui.panel.id;
+			var kitId = ui.panel.id;
 			
 			var typetabs = $('.calctypes', $(ui.panel)).tabs({
 				add : function(event, ui){
 					var table = $('<table/>');
-					var calcType = calcTypes_[ui.panel.id];
+					var calcTypeId = ui.panel.id;
+					var calcType = calcTypes_[calcTypeId];
 					if ( calcType && calcType.buildTable){
-						calcType.buildTable(table, kits_[lociId], accessor);
+						calcType.buildTable(table, kits_[kitId], accessor);
 						$(ui.panel).append(table);
 					}
+					$('input[type="button"]', table).click(saveTable({
+						"calcType": calcType, 
+						"calcTypeId": calcTypeId,
+						kit:kitId
+					}));
 				}
 			});
 			
 			for (var i in calcTypes_){
 				if (calcTypes_.hasOwnProperty(i)){
 					typetabs.tabs('add', '#' + i, calcTypes_[i].name);
-					$('#' + lociId + ' #' + i + ' input').keyup(calcTypes_[i].algo);
+					$('#' + kitId + ' #' + i + ' input').keyup(calcTypes_[i].algo);
 				}
 				
 			}
@@ -645,6 +651,8 @@
 
 			root.find('.pi').html('');
 			root.find('.pattern').html('');
+			root.parent().find('#cpi').text('');
+
 			var param = [];
 			for (var n = 1; n <= count; ++ n){
 				param.push(parseParam(root.find('.p' + n + ' input').val()));
@@ -665,8 +673,37 @@
 					if (val){ cpi *= val;}
 				}
 				console.info(cpi);
-				root.parent().find('#cpi').text(cpi.toExponential(6));
+				if (cpi != 1.0)
+					root.parent().find('#cpi').text(cpi.toExponential(6));
 			}
 		};
 	}
+
+	function saveTable(meta){
+		return function(){
+			var bb = new BlobBuilder();
+			bb.append(
+'{\
+	"meta":{\
+		"calcType": ' + meta.calcTypeId + ',\
+		"kit": ' + meta.kit + '\
+	}\
+}'
+			);
+
+			var d = new Date();
+			var month = d.getMonth() + 1;
+			var df = d.getFullYear() + (month < 10 ? '0' + month : '' + month) + (d.getDate() < 10 ? '0' : '') + d.getDate() + '.' + d.getHours() + d.getMinutes();
+			saveAs(bb.getBlob("text/plain;charset=utf-8"), meta.kit + '.' + meta.calcType.name + '.' + df + '.txt');
+		};
+	}
 })();
+
+
+
+
+
+
+
+
+

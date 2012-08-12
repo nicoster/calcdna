@@ -20,6 +20,11 @@ td {text-align: center;}
 	padding-left:20px;
 }
 
+.cpi_row {
+	padding-bottom: 10px;
+	padding-top: 10px	
+}
+
 td, th{
 	padding: 2px 2px;
 }
