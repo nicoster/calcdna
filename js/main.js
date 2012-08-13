@@ -1,4 +1,5 @@
 (function(){
+	var ext_ = '.cpi';
 	var ver_ = '1.0';
 	var tag_ = 'cpifile';
 	var left_default_ = '陕西省西安市公安司法鉴定中心';
@@ -755,7 +756,7 @@
 			var month = d.getMonth() + 1;
 			var df = d.getFullYear() + (month < 10 ? '0' + month : '' + month) + (d.getDate() < 10 ? '0' : '') + d.getDate() + '.' + d.getHours() + d.getMinutes();
 
-			saveAs(bb.getBlob("text/plain;charset=utf-8"), meta.kit + '.' + meta.calcType.name + '.' + df + '.txt');
+			saveAs(bb.getBlob("text/plain;charset=utf-8"), meta.kit + '.' + meta.calcType.name + '.' + df + ext_);
 		};
 	}
 

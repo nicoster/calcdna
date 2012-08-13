@@ -17,6 +17,8 @@ body{
 	border: 1px solid #4297D7;
 	 
 	border-top-right-radius: 5px;
+	background: url(../images/bg.gif) no-repeat;
+
 }
 
 th{
@@ -36,7 +38,7 @@ th{
 }
 
 .fileinput-input {
-	width: 300px;
+	width: 200px;
 	margin-left: 3px;
 }
 

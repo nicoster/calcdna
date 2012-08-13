@@ -10,7 +10,10 @@ body{
 .ui-tabs-nav,
 #loadFiles,
 input[type="button"],
-.save
+.save,
+#load,
+.fileinput-input,
+.fileinput-button
 {display:none;}
 
 
