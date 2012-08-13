@@ -34,3 +34,12 @@ th{
 	display: inline-block; 
 	text-align: right;
 }
+
+.fileinput-input {
+	width: 300px;
+	margin-left: 3px;
+}
+
+.fileinput-button {
+	width: 50px;
+}

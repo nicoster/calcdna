@@ -9,7 +9,8 @@ body{
 
 .ui-tabs-nav,
 #loadFiles,
-input[type="button"]
+input[type="button"],
+.save
 {display:none;}
 
 

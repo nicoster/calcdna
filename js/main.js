@@ -759,7 +759,7 @@
 		};
 	}
 
-	$('#loadFiles').change(function(evt) {
+	$('#load').change(function(evt) {
 		var files = evt.target.files; // FileList object
 		var file = files[0];
 		console.dir(file);
@@ -815,7 +815,7 @@
     $(window).bind('beforeunload', function() {
         return '确定要离开本页面吗? \n任何没有保存的修改在离开后都会丢失.';
     }); 
-//	$('#loadFiles').customFileInput();
+	$('#load').fileinput({buttonText: "浏览.."});
 
 })();
 
