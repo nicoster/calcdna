@@ -7,6 +7,12 @@ body{
 	padding: 0px;
 }
 
+.mainpage{
+	width : 600px;
+	min-height : 600px;
+	margin: 0 auto;
+}
+
 
 .mainpage .ui-tabs-nav{
 	border: none;
@@ -32,18 +38,21 @@ th{
 	padding: 5px 40px 5px 40px;
 }
 
-.table_container{
+.table_container, .banner{
 	display: inline-block; 
 	text-align: right;
 }
 
-.fileinput-input {
-	width: 200px;
-	margin-left: 3px;
+.banner{width: 100%;}
+.fileinput-wrapper{
+	margin-right: 3px;
 }
 
-.fileinput-button {
-	width: 50px;
+.logo{
+	background: url(../images/logo.png) no-repeat center;
+	height: 86px;
+	width: 100%;
+	float: left;
 }
 
 #tabs-min {
@@ -78,3 +87,4 @@ th{
 	background: transparent;
 
 }
+

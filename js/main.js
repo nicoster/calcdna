@@ -54,7 +54,7 @@
 
 
 	var tabbar = '<div id="main"><ul/></div>';
-	$(".mainpage").append(tabbar);
+	$(".maincontent").append(tabbar);
 	
 	function assert(b){
 		if (! b) alert("Assertion failed! " + b);

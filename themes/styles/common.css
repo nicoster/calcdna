@@ -6,6 +6,7 @@
 table input {width:90%;}
 
 table{
+	width:520px;
 	border-collapse: collapse;	
 }
 
@@ -44,11 +45,11 @@ input{
 	padding : 2px 2px;
 }
 
-.mainpage .ui-widget-header{
+.maincontent .ui-widget-header{
 	background:none;
 }
 
-.mainpage .ui-widget-content{
+.maincontent .ui-widget-content{
 	border:none;
 }
 
