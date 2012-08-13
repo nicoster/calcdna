@@ -276,17 +276,8 @@
 		}
 		return ret;
 	};
-	
-	function minus(s1, s2){
-		var ret = [];
-		for (var i in s1){
-			if (s2.indexOf(s1[i]) == -1){
-				ret.push(s1[i]);
-			}
-		}
-		return ret;
-	}
-	
+
+	// make sure s1, s2 are sorted	
 	Array.prototype.equal = function(s2){
 		if (this.length != s2.length) return false;
 		for (var i = 0, len = this.length; i < len; ++ i){
@@ -294,15 +285,6 @@
 		}
 		return true;
 	};
-	
-	// make sure s1, s2 are sorted
-	function equal(s1, s2){
-		if (s1.length != s2.length) return false;
-		for (var i in s1){
-			if (s1[i] != s2[i]) return false;
-		}
-		return true;
-	}
 	
 	Array.prototype.intersection = function(s2){
 		var ret = [];
@@ -313,16 +295,6 @@
 		}
 		return ret;
 	};
-	
-	function intersection(s1, s2){
-		var ret = [];
-		for (var i in s1){
-			if (s2.indexOf(s1[i]) != -1){
-				ret.push(s1[i]);
-			}
-		}
-		return ret;
-	}
 	
 	Array.prototype.union = function(s2){
 		var ret = [];
@@ -337,16 +309,6 @@
 	Array.prototype.empty = function(){
 		return this.length === 0;
 	};
-	
-	function union(s1, s2){
-		var ret = [];
-		for (var i in s1){
-			if (s2.indexOf(s1[i]) == -1){
-				ret.push(s1[i]);
-			}
-		}
-		return ret.concat(s2);
-	}
 	
 	function matchPatternIdenty(p){
 		var p1 = p[0];
