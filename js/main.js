@@ -56,16 +56,10 @@
 	var tabbar = '<div id="main"><ul/></div>';
 	$(".maincontent").append(tabbar);
 	
-	function assert(b){
-		if (! b) alert("Assertion failed! " + b);
-	}
-
-	function accessor(vec, i){return vec[i];}
-	
 	function buildTriadTable(table, loci, accessor){
 		table.append('<tr><th id="loci">STR基因座</th><th>C</th><th>M</th><th>AF</th><th>公式</th><th>PI</th></tr>');
 		for (var i = 0; i < loci.length; i ++){
-			var lo = (accessor ? accessor(loci, i) : i);
+			var lo = loci[i];
 			table.append("<tr id='" + lo +"'><td>" + lo +
 				"</td><td class='p1'><input/></td><td class='p2'><input/></td>" +
 				"<td class='p3'><input /></td><td class='p4 pattern'/><td class='p5 pi'/></tr>");
@@ -77,7 +71,7 @@
 	function buildDyadTable(table, loci, accessor){
 		table.append('<tr><th id="loci">STR基因座</th><th>C</th><th>AF</th><th>公式</th><th>PI</th></tr>');
 		for (var i = 0; i < loci.length; i ++){
-			var lo = (accessor ? accessor(loci, i) : i);
+			var lo = loci[i];
 			table.append("<tr id='" + lo +"'><td>" + lo + "</td><td class='p1'><input/></td>" +
 				"<td class='p2'><input/></td><td class='p3 pattern'/><td class='p4 pi'/></tr>");
 		}
@@ -88,7 +82,7 @@
 	function buildIdentyTable(table, loci, accessor){
 		table.append('<tr><th id="loci">STR基因座</th><th>样本</th><th>样本</th><th>PI</th></tr>');
 		for (var i = 0; i < loci.length; i ++){
-			var lo = (accessor ? accessor(loci, i) : i);
+			var lo = loci[i];
 			table.append("<tr id='" + lo +"'><td>" + lo + "</td><td class='p1'><input/></td>" +
 				"<td class='p2'><input/></td><td class='p3 pi'/></tr>");
 		}
@@ -96,10 +90,10 @@
 		table.append("<tr><td class='cpi'>LR=1/P(X)=</td><td colspan='3' id='cpi'/></tr>");
 	}
 
-	function buildBothdoubtsTable(table, loci, accessor){
+	function buildBothdoubtsTable(table, loci){
 		table.append('<tr><th id="loci">STR基因座</th><th>C</th><th>AM</th><th>AF</th><th>公式</th><th>PI</th></tr>');
 		for (var i = 0; i < loci.length; i ++){
-			var lo = (accessor ? accessor(loci, i) : i);
+			var lo = loci[i];
 			table.append("<tr id='" + lo +"'><td>" + lo +
 				"</td><td class='p1'><input/></td><td class='p2'><input/></td>" +
 				"<td class='p3'><input /></td><td class='p4 pattern'/><td class='p5 pi'/></tr>");
@@ -131,7 +125,7 @@
 					$(ui.panel).append(tableContainer);
 
 					if ( calcType && calcType.buildTable){
-						calcType.buildTable(table, kits_[kitId], accessor);
+						calcType.buildTable(table, kits_[kitId]);
 						tableContainer.append(table);
 					}
 
@@ -152,9 +146,6 @@
 				
 			}
 			
-		},
-		
-		select : function(event, ui){
 		}
 	});
 	
