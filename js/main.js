@@ -703,19 +703,22 @@
 				
 				var pi = result.formula(result.resolved);
 				root.find('.pi').html(pi ? Number(pi).toFixed(8) : "");
-				var fields = result.pattern.split(' ');
-				root.find('.pattern').html(fields[fields.length - 1]);
-				
-				var pis = root.parent().find('tr .pi');
-				var cpi = 1.0;
-				for (var i = 0; i < pis.length; i ++){
-					var val = Number($(pis[i]).text());
-					if (val){ cpi *= val;}
+				if (result.pattern) {
+					var fields = result.pattern.split(' ');
+					root.find('.pattern').html(fields[fields.length - 1]);
 				}
-				console.info(cpi);
-				if (cpi != 1.0)
-					root.parent().find('#cpi').text(cpi.toExponential(6));
 			}
+
+			var pis = root.parent().find('tr .pi');
+			var cpi = 1.0;
+			for (var i = 0; i < pis.length; i ++){
+				var val = Number($(pis[i]).text());
+				if (val){ cpi *= val;}
+			}
+			console.info(cpi);
+			if (cpi != 1.0)
+				root.parent().find('#cpi').text(cpi.toExponential(6));
+
 		};
 	}
 
