@@ -110,7 +110,7 @@
 	
 	var main_ = $('#main').tabs({
 		add : function(event, ui){
-			var tabbar = '<div class="calctypes"><ul/></div>';
+			var tabbar = '<div class="calctypes" id="tabs-min"><ul/></div>';
 			$(ui.panel).append(tabbar);
 			
 			var kitId = ui.panel.id;
