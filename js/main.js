@@ -559,7 +559,7 @@
 				break;
 			case '212':
 				if (p1.equal(p1.intersection(p2.union(p3)).sort())){
-					var q212 = minus(p1, p2);
+					var q212 = p1.minus(p2);
 					return {
 						pattern: "pq p qr(pq) 1/2q",
 						param: q212,
