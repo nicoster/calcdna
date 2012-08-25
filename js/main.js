@@ -4,6 +4,7 @@
 	var tag_ = 'cpifile';
 	var left_default_ = '陕西省西安市公安司法鉴定中心';
 	var right_default_ = '控制编号: XAFSTC/R-06-05-1 第1版第0次修订';
+	var title_default_ = '亲缘鉴定亲权指数数值报告表';
 
 	var calcTypes_ = {
 		'triad':{
@@ -13,7 +14,7 @@
 			'format' : {
 				'left': left_default_,
 				'right': right_default_,
-				'title': '亲缘鉴定亲权指数数值报告表'
+				'title': title_default_
 			}
 		},
 		'dyad':{
@@ -23,7 +24,7 @@
 			'format' : {
 				'left': left_default_,
 				'right': right_default_,
-				'title': '二联体报告表'
+				'title': title_default_
 			}
 		},
 		'identification':{
@@ -32,11 +33,16 @@
 				var p = $(current).val();
 				root.find('.p1 input').val(p);
 				root.find('.p2 input').val(p);
+			},
+			function(LR){
+				if (LR === 0) return LR;
+				return 1/LR;
 			}),
 			'format' : {
 				'left': left_default_,
-				'right': right_default_,
-				'title': '本案比中个体识别统计学参数数值报告表'
+				'right': '控制编号: XAFSTC/R-06-03-1 第1版第0次修订',
+				'title': '本案比中个体识别统计学参数数值报告表',
+				'footer': '注:表型=基因座'
 			},
 			'buildTable': buildIdentyTable
 		},
@@ -47,7 +53,7 @@
 			'format' : {
 				'left': left_default_,
 				'right': right_default_,
-				'title': '双亲皆疑报告表'
+				'title': title_default_
 			}
 		}
 	};
@@ -121,6 +127,9 @@
 					$('.header_left', header).text(calcType.format.left);
 					$('.header_right', header).text(calcType.format.right);
 					$('.title', header).text(calcType.format.title);
+
+					//FIXME: add footer here
+
 					$(ui.panel).append(header);
 					$(ui.panel).append(tableContainer);
 
@@ -634,7 +643,7 @@
 		result.resolved = resolved;
 	}
 
-	function evaluate(count, match, preCalc){
+	function evaluate(count, match, preCalc, calcPX){
 		return function(){
 			var root = $(this).parents("tr");
 			if (! root) return;
@@ -668,6 +677,7 @@
 				var val = Number($(pis[i]).text());
 				if (val){ cpi *= val;}
 			}
+			if (calcPX) cpi = calcPX(cpi);
 			console.info(cpi);
 			if (cpi != 1.0)
 				root.parent().find('#cpi').text(cpi.toExponential(6));
